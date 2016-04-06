@@ -1,7 +1,7 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * @author Herbert Pichler
+ * IoTEndpoint WebsocketEndpointServer Klasse
+ * Diese Klasse beinhaltet alle nötigen Methoden zum Senden und Empfangen der JSON Srings
  */
 package info.vigaun.IoT;
 
@@ -26,93 +26,114 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
 /**
- *
- * @author Herbert
+ * 
+ * Klasse IoTEndpoint
  */
     @ServerEndpoint("/chat")
 public class IoTEndpoint {
     
     /**
-     * date for logfile
+     * static session Variable für die anderen Klassen
      */
     static Session session1 = null;
+    /**
+     *Variabled ate  für die Uhrzeit (Logfile) HH:mm:ss
+     */
     SimpleDateFormat date=new SimpleDateFormat("HH:mm:ss");
     
      /**
-      * static variable session for client handling
+      * static Set sessions für die Clients. 
+      * Alle verbundenen Clients werden mittels dieses Set verwaltet
       */
-    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());
-    
-    public static Session getSession(){
-        return session1;
-    }
-    
-    
+    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());  
     /**
-     * connection with a client
-     * @param session current session
+     * Methode wird aufgerufen wenn sich ein Client verbindet
+     * @param session aktuelle Session
      * @throws IOException 
+     * die Variable session1 wird inizialisiert
      */
     @OnOpen
     public void onOpen(Session session) throws IOException {
-        //session.getBasicRemote().sendText("Server: onOpen");
         sessions.add(session);
         session1=session;
         System.out.println("Server: Connection opened...");
     }
     /**
      * 
-     * @param session current session
-     * @param message message from the client
-     * @return
-     * @throws ParseException
-     * @throws IOException 
+     * @param session aktuelle Session
+     * @param message Nachricht (JSON) von einem Client
+     * @return Nachricht vom Client
+     * @throws ParseException (JSON Parser), 
+     * @throws IOException
      */
     @OnMessage
     public String onMessage(Session session,String message) throws ParseException, IOException {
-
-        String username = (String) session.getUserProperties().get("username");
-        //Wenn kein Attribut (username) gesetzt ist, username in Session eintragen
-        if(username == null){
-            session.getUserProperties().put("username", message);
-            session.getAsyncRemote().sendText("System: sie sind jetzt verbunden als: " + message);
-            writeLog(buildString( "User " + message , " ist dem Server verbunden"));
-            //build the JSON string and send update all to the client
+        
+        String ID = (String) session.getUserProperties().get("ID");
+        /**
+         * Wird bei der ersten Verbindung die ID gesetzt
+         * ID wird zur identifizierung der unterschiedlichen Sessions verwendet
+         * Wenn kein Attribut (uID) gesetzt ist, ID in Session als String eintragen
+         */
+        if(ID == null){
+            session.getUserProperties().put("ID", message);
+            /**
+             * @deprecated nachstehenden zwei Methoden sind für den Chatserver
+             * werden hier nicht gebraucht
+             */
+            //session.getAsyncRemote().sendText("System: sie sind jetzt verbunden als: " + message);
+            //writeLog(buildString( "User " + message , " ist dem Server verbunden"));
+            /**
+             * sendet einen JSON String {"request":5} bedeutet Update alle Werte
+             */
             session.getAsyncRemote().sendText(createJSON("5"));
         }
         else{
-            //writeLog(buildString(username, message));
+            /**
+             * empfangene Nachricht wird decodiert und entsprechende Aktion ausgeführt
+             */
             decodingJson(message);
         }
-        
-        //System.out.println("Server: Message received: >"+message+"<");     
-        // send echo to client
+           
+        /*
+         * @deprecated
+         * sendet Echo zum Client
+        */
+
         return message;
     }
-
+   /**
+    * Methode gibt Fehler des WebSocketServers aus
+    * @param t  Fehlerobjekt welches geworfen wird
+    */
     @OnError
     public void onError(Throwable t) {
         t.printStackTrace();
     }
-
+    
+    /**
+     * Methode wird verwendet wenn der Client die Verbindung trennt
+     * @param session Session wird aus dem Set gelöscht
+     */
     @OnClose
     public void onClose(Session session) {
         sessions.remove(session);
         System.out.println("Server: Connection closed...");
     }
     
-        /**
-     * 
-     * @param value
-     * @return 
+    /**
+     * Methode erzeugt einen request JSON String ({"request":value}
+     * @param value Ganzzahl für das Update
+     * mögliche Werte 1:Temperatur innen,  2:Temperatur aussen, 3:Heizuungstemperatur, 
+     * 4:Fensterstatus: true/false, 5:Haustür:true/false 
+     * true = offen; false geschlossen
+     * @return JSON String
      */
     private String createJSON(String value){
-        
         JSONObject obj = new JSONObject();
         obj.put("request", value);
         System.out.print("\n send request: "+obj.toString()+"\n");
         return obj.toString();
-        
     }
     /**
      * writes a log file
@@ -132,20 +153,24 @@ public class IoTEndpoint {
     
     
     /**
-     * Teilstrings verketten Besser wäre JSON-Objekt
-     * @param username
-     * @param message
-     * @return 
+     * Teilstrings verketten für das Logfile
+     * @param ID ID des Controllers
+     * @param message empfangenen Werte 
+     * @return String mit Datum,ID und Zeit
      */
-    private String buildString (String username, String message){
-
-        return "("+date.format(new Date())+") "  + username+": "+message;
+    private String buildString (String ID, String message){
+        return "("+date.format(new Date())+") "  + ID +": "+ message;
     }
     
-    public void decodingJson(String s) throws ParseException, IOException{
-        
+    /**
+     * Decodiert den empfangenen JSON String und schreibt in ein Logfile 
+     * @param json empfangene Daten
+     * @throws ParseException Fehler beim JSON decoding
+     * @throws IOException  falsche Eingabe
+     */
+    public void decodingJson(String json) throws ParseException, IOException{
         JSONParser parser = new JSONParser();
-        Object obj = parser.parse(s);
+        Object obj = parser.parse(json);
 	JSONObject jsonObject = (JSONObject) obj;
         double value =0.00;
         if(obj.toString().contains("temperatur") && obj.toString().contains("feuchte")){
@@ -170,41 +195,39 @@ public class IoTEndpoint {
         }
     } 
     /**
-     * update all JSON decoding
-     * @param s string in JSON
+     * Erstellt einen decotierten String
+     * @param s Name des Wertes
      * @param j JSON object
-     * @return decoded JSON value
+     * @return Zeichenkette Wertepaar: (Temperatur:23,12)
      */
     private String buildDecodeJSON(String s, JSONObject j){
-      
        Double value = (double)(j.get(s));
        return (s+":"+Double.toString(value)+"; ");
     }
    
     /**
-     * send message to all connected clients
-     * @param session
-     * @param message
-     * @param username
+     * sendet eine Nachricht an alle verbundenen Clients
+     * @param message requestnummer für Clients
      * @throws IOException 
      */
-    private void sendAll(Session session ,String message,String username) throws IOException{
-        
+    private void sendAll(String message) throws IOException{
           for(Session client : sessions){
-              client.getBasicRemote().sendText(buildString(username, message));
+              client.getBasicRemote().sendText(createJSON(message));
              }
     }
-    //new
-    public void sendOne(Session session ,String message,String username)throws IOException{
-
-    // Usually this can be a field rather than a method variable
+    
+    /**
+     * @deprecated wurde für eine Zufallszahl verwendet
+     * @param session aktuelle Verbindung
+     * @throws IOException falsche Eingabe
+     */
+    public void sendOne(Session session )throws IOException{
     Random rand = new Random();
-
-    // nextInt is normally exclusive of the top value,
-    // so add 1 to make it inclusive
+    /**
+     * erzeugt eine Zusatzzahl zwischen 1 und 5 (1,2,3,4,5)
+     */
     int randomNum = rand.nextInt((5) + 1) + 1;
-        
-        session.getBasicRemote().sendText(Integer.toString(randomNum));
+    session.getBasicRemote().sendText(Integer.toString(randomNum));
     }
     
 }

@@ -1,7 +1,8 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+
+/**
+ * @author Herbert Pichler
+ * @version 1.1
+ * @date 06.04.2016
  */
 package info.vigaun.IoT;
 
@@ -12,8 +13,7 @@ import javax.websocket.Session;
 import org.glassfish.tyrus.server.Server;
 import org.json.simple.JSONObject;
 /**
- *
- * @author Herbert
+ * Diese Klasse  startet den WesocketServer
  */
 public class IoTServer {
 
@@ -24,27 +24,29 @@ public class IoTServer {
         runServer();
     }
  
+    /**
+     * Methode startet den Server
+     */
     public static void runServer() {
         Server server = new Server("localhost", 33334, "/websockets",null, IoTEndpoint.class);
- 
         try {
             server.start();
- /*           BufferedReader reader = new BufferedReader(
-                    new InputStreamReader(System.in));
-            System.out.print("Please press a key to stop the server.");
-            reader.readLine();*/
             runMenue();
-        } catch (Exception e) {
+            } 
+        catch (Exception e) {
             throw new RuntimeException(e);
-        } finally {
+            } 
+        finally {
             server.stop();
         }
     } 
     
-    
+/**
+ * Diese Methode zeigt ein einfaches Menü. Alle wichtigen funktionen implementiert
+ * @throws IOException falsche Eingabe
+ * @throws InterruptedException falsche
+ */    
 private static void runMenue() throws IOException, InterruptedException{
-//session variable
-//Session session = IoTEndpoint.session1;
 
 while(true){
 Scanner s = new Scanner(System.in);
@@ -118,6 +120,11 @@ default:
  }     
 }
 
+/**
+ * Erzeugt den benötigten JSON String
+ * @param value Zeichenkette für den Client mögliche Werte 1-5
+ * @return JSON String
+ */
  private static String createJSON(String value){
         JSONObject obj = new JSONObject();
         obj.put("request", value);
