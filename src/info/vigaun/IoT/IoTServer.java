@@ -12,16 +12,40 @@ import java.util.Scanner;
 import javax.websocket.Session;
 import org.glassfish.tyrus.server.Server;
 import org.json.simple.JSONObject;
+//logger
+import org.apache.log4j.Appender;
+import org.apache.log4j.FileAppender;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.apache.log4j.PatternLayout;
 /**
  * Diese Klasse  startet den WesocketServer
  */
 public class IoTServer {
 
+    static Logger logger = Logger.getRootLogger();
+    static String filename = "sensor.log";
+    static String pattern = "%d{MM.dd.yyyy\tHH:mm:ss}\t%p\t%m %n";
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
+        
+        /**
+         * Fileappender erstellen und dem Logger hinzufügen
+         */
+        Appender fileAppender = null;
+        try {
+            fileAppender = new FileAppender(new PatternLayout(pattern),
+                    filename, true);
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.exit(0);
+        }
+        logger.addAppender(fileAppender);
+        logger.info("Server wurde gestartet");
         runServer();
+
     }
  
     /**
@@ -70,7 +94,6 @@ try{
 catch (InputMismatchException e){
     System.err.println("Input error - kein gültiger Ganzzahlenwert");
             }
-
 // Switch construct
 switch (value) {
 case 1:
@@ -110,7 +133,9 @@ case 3:
     }
 case 4:
    System.out.println("Beenden");
+   logger.info("Server wurde beendet");
    System.exit(1);
+
    break;
 default:
   System.out.println("Falsche Auswahl!");

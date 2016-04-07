@@ -5,6 +5,7 @@
  */
 package info.vigaun.IoT;
 
+import static info.vigaun.IoT.IoTServer.logger;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -92,7 +93,7 @@ public class IoTEndpoint {
             /**
              * empfangene Nachricht wird decodiert und entsprechende Aktion ausgeführt
              */
-            decodingJson(message);
+            decodingJson(session, message);
         }
            
         /*
@@ -168,7 +169,7 @@ public class IoTEndpoint {
      * @throws ParseException Fehler beim JSON decoding
      * @throws IOException  falsche Eingabe
      */
-    public void decodingJson(String json) throws ParseException, IOException{
+    public void decodingJson(Session session,String json) throws ParseException, IOException{
         JSONParser parser = new JSONParser();
         Object obj = parser.parse(json);
 	JSONObject jsonObject = (JSONObject) obj;
@@ -182,16 +183,19 @@ public class IoTEndpoint {
             allValues = allValues + buildDecodeJSON("druck", jsonObject);
             System.out.println(allValues);
             writeLog(buildString("all values",allValues));
+           logger.info((String)session.getUserProperties().get("ID")+" "+ allValues);
         }
         else if(obj.toString().contains("temperatur")){
             value = (double)(jsonObject.get("temperatur"));
             System.out.println("temperatur: "+value);
             writeLog(buildString("temperatur",Double.toString(value)));
+            logger.info((String)session.getUserProperties().get("ID")+" "+ Double.toString(value));
         }
         else if(obj.toString().contains("feuchte")){
             value = (double) jsonObject.get("feuchte");
             System.out.println("feuchte: "+value);
             writeLog(buildString("feuchte",Double.toString(value)));
+            logger.info((String)session.getUserProperties().get("ID")+" "+ Double.toString(value));
         }
     } 
     /**
