@@ -7,6 +7,7 @@
 package info.vigaun.IoT;
 
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 import javax.websocket.Session;
@@ -22,7 +23,10 @@ import org.apache.log4j.PatternLayout;
  * Diese Klasse  startet den WesocketServer
  */
 public class IoTServer {
-
+    /**
+     * logger Variable für das Logfile wird in der Datei sensor.log abgespeichert
+     * Pattern gibt an Datum Uhrzeit Logfilter Meldung
+     */
     static Logger logger = Logger.getRootLogger();
     static String filename = "sensor.log";
     static String pattern = "%d{MM.dd.yyyy\tHH:mm:ss}\t%p\t%m %n";
@@ -134,6 +138,7 @@ case 3:
 case 4:
    System.out.println("Beenden");
    logger.info("Server wurde beendet");
+   setOnlineStatus();
    System.exit(1);
 
    break;
@@ -144,6 +149,19 @@ default:
   }
  }     
 }
+
+private static void setOnlineStatus(){
+    
+    for (Session s: IoTEndpoint.sessions){
+    try {
+      database.updateDatabase(" ","nein",Integer.parseInt((String)s.getUserProperties().get("ID")));
+     } 
+    catch (SQLException ex) {
+       java.util.logging.Logger.getLogger(IoTEndpoint.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+         }
+    }
+}
+
 
 /**
  * Erzeugt den benötigten JSON String

@@ -10,12 +10,15 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -33,20 +36,16 @@ import org.json.simple.parser.ParseException;
     @ServerEndpoint("/chat")
 public class IoTEndpoint {
     
+     static Long id;
     /**
      * static session Variable für die anderen Klassen
      */
     static Session session1 = null;
-    /**
-     *Variabled ate  für die Uhrzeit (Logfile) HH:mm:ss
-     */
-    SimpleDateFormat date=new SimpleDateFormat("HH:mm:ss");
-    
      /**
       * static Set sessions für die Clients. 
       * Alle verbundenen Clients werden mittels dieses Set verwaltet
       */
-    private static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());  
+    public static final Set<Session> sessions = Collections.synchronizedSet(new HashSet<Session>());  
     /**
      * Methode wird aufgerufen wenn sich ein Client verbindet
      * @param session aktuelle Session
@@ -77,7 +76,17 @@ public class IoTEndpoint {
          * Wenn kein Attribut (uID) gesetzt ist, ID in Session als String eintragen
          */
         if(ID == null){
-            session.getUserProperties().put("ID", message);
+            
+            /**
+             * decodingJson zerlegt den JSON String und trägt den Controller in die Datenbank ein
+             * @param message kommt vom Controller
+             * @param session aktuelle Session
+             */
+            decodingJson(session,message);
+            /**
+             * @param ID ist der identifizierende Name des Controllers
+             */
+            session.getUserProperties().put("ID", Long.toString(id));
             /**
              * @deprecated nachstehenden zwei Methoden sind für den Chatserver
              * werden hier nicht gebraucht
@@ -100,7 +109,6 @@ public class IoTEndpoint {
          * @deprecated
          * sendet Echo zum Client
         */
-
         return message;
     }
    /**
@@ -118,7 +126,14 @@ public class IoTEndpoint {
      */
     @OnClose
     public void onClose(Session session) {
+       try {
+             database.updateDatabase(" ","nein",Integer.parseInt((String)session.getUserProperties().get("ID")));
+         } 
+       catch (SQLException ex) {
+             Logger.getLogger(IoTEndpoint.class.getName()).log(Level.SEVERE, null, ex);
+         }
         sessions.remove(session);
+ 
         System.out.println("Server: Connection closed...");
     }
     
@@ -136,33 +151,7 @@ public class IoTEndpoint {
         System.out.print("\n send request: "+obj.toString()+"\n");
         return obj.toString();
     }
-    /**
-     * writes a log file
-     * @param s string from sensor
-     * @throws IOException 
-     */
-    private void writeLog(String s) throws IOException{
-          FileWriter writer;
-          File file;
-          file = new File("sensorlog.txt");
-          writer = new FileWriter(file ,true);
-          writer.write(s);
-          writer.write(System.getProperty("line.separator"));
-          writer.flush();
-          writer.close();         
-    }
-    
-    
-    /**
-     * Teilstrings verketten für das Logfile
-     * @param ID ID des Controllers
-     * @param message empfangenen Werte 
-     * @return String mit Datum,ID und Zeit
-     */
-    private String buildString (String ID, String message){
-        return "("+date.format(new Date())+") "  + ID +": "+ message;
-    }
-    
+        
     /**
      * Decodiert den empfangenen JSON String und schreibt in ein Logfile 
      * @param json empfangene Daten
@@ -174,39 +163,51 @@ public class IoTEndpoint {
         Object obj = parser.parse(json);
 	JSONObject jsonObject = (JSONObject) obj;
         double value =0.00;
-        if(obj.toString().contains("temperatur") && obj.toString().contains("feuchte")){
+        /**
+         * Controller wird in die Datenbank eingetragen
+         */
+        if((obj.toString().contains("id")) && (obj.toString().contains("name"))){
+            id = (Long) (jsonObject.get("id"));
+            String name = (String) (jsonObject.get("name"));
+            String ip = (String) (jsonObject.get("ip"));
+            String location = (String)(jsonObject.get("location"));
+            database.insertController(id.intValue(),name,ip,location);
+        }
+        /**
+         * Fullupdate wird gesendet
+         */
+        if(obj.toString().contains("temp_in") && obj.toString().contains("temp_out")){
             String allValues ="";
-            value = (double)(jsonObject.get("temperatur"));
-            allValues = allValues + buildDecodeJSON("temperatur", jsonObject);
-            allValues = allValues + buildDecodeJSON("feuchte", jsonObject);
-            allValues = allValues + buildDecodeJSON("time", jsonObject);
-            allValues = allValues + buildDecodeJSON("druck", jsonObject);
-            System.out.println(allValues);
-            writeLog(buildString("all values",allValues));
-           logger.info((String)session.getUserProperties().get("ID")+" "+ allValues);
+            value = (double)(jsonObject.get("temp_in"));
+            allValues = allValues + buildDecodeJSON("Innentemperatur: ","temp_in", jsonObject);
+            allValues = allValues + buildDecodeJSON("Aussentemperatur: ","temp_out", jsonObject);
+            allValues = allValues + buildDecodeJSON("Heizung: ","heizung", jsonObject);
+            allValues = allValues + buildDecodeJSON("Luftdruck: ","luftdruck", jsonObject);
+           logger.info("ID " + (String)session.getUserProperties().get("ID")+" "+ allValues);
         }
-        else if(obj.toString().contains("temperatur")){
-            value = (double)(jsonObject.get("temperatur"));
-            System.out.println("temperatur: "+value);
-            writeLog(buildString("temperatur",Double.toString(value)));
-            logger.info((String)session.getUserProperties().get("ID")+" "+ Double.toString(value));
+        else if(obj.toString().contains("temp_in")){
+            value = (double)(jsonObject.get("temp_in"));
+            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Innentemperatur: "+ Double.toString(value));
         }
-        else if(obj.toString().contains("feuchte")){
-            value = (double) jsonObject.get("feuchte");
-            System.out.println("feuchte: "+value);
-            writeLog(buildString("feuchte",Double.toString(value)));
-            logger.info((String)session.getUserProperties().get("ID")+" "+ Double.toString(value));
+        else if(obj.toString().contains("temp_out")){
+            value = (double) jsonObject.get("temp_out");
+            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Aussentemperatur: "+ Double.toString(value));
+        }
+        else if(obj.toString().contains("heizung")){
+            value = (double) jsonObject.get("heizung");
+            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Heizung: "+ Double.toString(value));
         }
     } 
     /**
      * Erstellt einen decotierten String
-     * @param s Name des Wertes
+     * @param s Name des Wertes im JSON
+     * @param name Name des Wertes klartext
      * @param j JSON object
      * @return Zeichenkette Wertepaar: (Temperatur:23,12)
      */
-    private String buildDecodeJSON(String s, JSONObject j){
+    private String buildDecodeJSON(String name,String s, JSONObject j){
        Double value = (double)(j.get(s));
-       return (s+":"+Double.toString(value)+"; ");
+       return (name + Double.toString(value)+"; ");
     }
    
     /**

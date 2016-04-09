@@ -1,4 +1,118 @@
-04.06.2016	21:49:58	INFO	Server wurde gestartet 
-04.06.2016	21:51:36	INFO	Server wurde gestartet 
-04.06.2016	21:52:07	INFO	Server wurde gestartet 
-04.06.2016	21:52:10	INFO	Server wurde beendet 
+
+04.08.2016	01:52:40	INFO	Server wurde gestartet 
+04.08.2016	01:54:03	INFO	Server wurde beendet 
+04.08.2016	01:54:06	INFO	Server wurde gestartet 
+04.08.2016	01:57:19	INFO	Server wurde beendet 
+04.08.2016	01:57:23	INFO	Server wurde gestartet 
+04.08.2016	01:59:33	INFO	Server wurde beendet 
+04.08.2016	01:59:36	INFO	Server wurde gestartet 
+04.08.2016	02:04:25	INFO	Server wurde beendet 
+04.08.2016	02:04:27	INFO	Server wurde gestartet 
+04.08.2016	02:06:21	INFO	Server wurde beendet 
+04.08.2016	02:06:24	INFO	Server wurde gestartet 
+04.08.2016	02:08:03	INFO	Server wurde beendet 
+04.08.2016	02:08:06	INFO	Server wurde gestartet 
+04.08.2016	02:08:57	INFO	1 temperatur:57.24; feuchte:26.33; time:61.61; druck:69.0;  
+04.08.2016	02:09:09	INFO	1 28.55 
+04.08.2016	02:09:15	INFO	1 24.66 
+04.08.2016	02:11:16	INFO	Server wurde gestartet 
+04.08.2016	02:11:33	INFO	1 temperatur:68.65; feuchte:49.89; time:19.78; druck:57.89;  
+04.08.2016	02:11:52	INFO	ID1 feuchte 46.33 
+04.08.2016	02:11:59	INFO	ID1 temperatur53.68 
+04.08.2016	02:12:09	INFO	Server wurde beendet 
+04.08.2016	11:51:06	INFO	Server wurde gestartet 
+04.08.2016	11:52:17	INFO	Server wurde gestartet 
+04.08.2016	11:52:59	INFO	Server wurde beendet 
+04.08.2016	11:55:06	INFO	Server wurde gestartet 
+04.08.2016	11:56:11	INFO	ID 1 temp_in:34.09; temp_out:41.74; heizung:42.53; luftdruck:31.99;  
+04.08.2016	11:56:21	INFO	ID 1 temp_in:56.11; temp_out:26.92; heizung:59.67; luftdruck:60.44;  
+04.08.2016	11:56:22	INFO	ID 1 Heizung 17.56 
+04.08.2016	11:56:24	INFO	ID 1 Innentemperatur31.89 
+04.08.2016	11:57:21	INFO	ID 1 temp_in:12.59; temp_out:54.57; heizung:61.29; luftdruck:17.34;  
+04.08.2016	11:58:25	INFO	ID 1 temp_in:52.41; temp_out:13.88; heizung:63.05; luftdruck:46.85;  
+04.08.2016	11:58:32	INFO	Server wurde gestartet 
+04.08.2016	12:03:08	INFO	Server wurde gestartet 
+04.08.2016	12:03:32	INFO	ID 1 Innentemperatur: :22.59; Aussentemperatur: :18.5; Heizung: :47.63; Luftdruck: :13.41;  
+04.08.2016	12:03:43	INFO	ID 1 Innentemperatur: :46.92; Aussentemperatur: :23.84; Heizung: :12.03; Luftdruck: :47.92;  
+04.08.2016	12:03:44	INFO	ID 1 Heizung: 42.42 
+04.08.2016	12:03:46	INFO	ID 1 Innentemperatur: 31.98 
+04.08.2016	12:04:42	INFO	Server wurde gestartet 
+04.08.2016	12:05:06	INFO	ID 1 Innentemperatur: 52.27; Aussentemperatur: 15.64; Heizung: 62.7; Luftdruck: 67.47;  
+04.08.2016	12:06:12	INFO	ID 1 Innentemperatur: 56.19; Aussentemperatur: 19.16; Heizung: 30.44; Luftdruck: 28.98;  
+04.08.2016	12:06:17	INFO	ID 1 Innentemperatur: 53.59; Aussentemperatur: 63.22; Heizung: 57.94; Luftdruck: 33.86;  
+04.08.2016	12:06:18	INFO	ID 1 Heizung: 51.06 
+04.08.2016	12:06:20	INFO	ID 1 Innentemperatur: 67.26 
+04.08.2016	12:07:26	INFO	ID 1 Innentemperatur: 52.8; Aussentemperatur: 11.18; Heizung: 51.85; Luftdruck: 64.95;  
+04.08.2016	12:08:32	INFO	ID 1 Innentemperatur: 14.88; Aussentemperatur: 10.27; Heizung: 66.75; Luftdruck: 11.29;  
+04.08.2016	12:09:27	INFO	ID 1 Innentemperatur: 64.72; Aussentemperatur: 10.31; Heizung: 32.63; Luftdruck: 44.85;  
+04.08.2016	12:20:55	INFO	Server wurde gestartet 
+04.08.2016	12:21:40	INFO	ID 1 Innentemperatur: 17.56; Aussentemperatur: 63.14; Heizung: 13.23; Luftdruck: 35.77;  
+04.08.2016	12:56:25	INFO	Server wurde gestartet 
+04.08.2016	12:57:08	INFO	ID 1 Innentemperatur: 35.62; Aussentemperatur: 65.66; Heizung: 15.2; Luftdruck: 40.15;  
+04.08.2016	12:58:15	INFO	ID 1 Innentemperatur: 51.63; Aussentemperatur: 43.33; Heizung: 65.79; Luftdruck: 57.35;  
+04.08.2016	12:59:22	INFO	ID 1 Innentemperatur: 20.42; Aussentemperatur: 47.36; Heizung: 50.53; Luftdruck: 46.74;  
+04.08.2016	13:00:30	INFO	ID 1 Innentemperatur: 45.61; Aussentemperatur: 10.08; Heizung: 60.89; Luftdruck: 14.91;  
+04.08.2016	13:01:37	INFO	ID 1 Innentemperatur: 68.03; Aussentemperatur: 27.48; Heizung: 42.77; Luftdruck: 25.34;  
+04.08.2016	13:02:45	INFO	ID 1 Innentemperatur: 64.59; Aussentemperatur: 53.84; Heizung: 61.77; Luftdruck: 60.82;  
+04.08.2016	13:03:53	INFO	ID 1 Innentemperatur: 51.51; Aussentemperatur: 69.12; Heizung: 45.25; Luftdruck: 58.01;  
+04.08.2016	13:05:01	INFO	ID 1 Innentemperatur: 50.92; Aussentemperatur: 62.66; Heizung: 43.66; Luftdruck: 31.07;  
+04.08.2016	13:06:11	INFO	ID 1 Innentemperatur: 23.14; Aussentemperatur: 53.97; Heizung: 59.12; Luftdruck: 18.83;  
+04.08.2016	13:06:44	INFO	Server wurde beendet 
+04.08.2016	13:06:48	INFO	Server wurde gestartet 
+04.08.2016	13:07:14	INFO	ID 1 Innentemperatur: 10.96; Aussentemperatur: 30.97; Heizung: 20.44; Luftdruck: 38.31;  
+04.08.2016	13:07:43	INFO	Server wurde gestartet 
+04.08.2016	13:08:03	INFO	ID 1 Innentemperatur: 29.48; Aussentemperatur: 58.14; Heizung: 32.2; Luftdruck: 55.22;  
+04.08.2016	13:09:10	INFO	ID 1 Innentemperatur: 55.36; Aussentemperatur: 21.64; Heizung: 39.1; Luftdruck: 26.81;  
+04.08.2016	13:10:27	INFO	ID 1 Innentemperatur: 66.96; Aussentemperatur: 49.14; Heizung: 18.67; Luftdruck: 27.79;  
+04.08.2016	13:11:31	INFO	ID 1 Innentemperatur: 21.2; Aussentemperatur: 56.72; Heizung: 60.49; Luftdruck: 55.56;  
+04.08.2016	13:12:35	INFO	ID 1 Innentemperatur: 45.17; Aussentemperatur: 46.86; Heizung: 44.54; Luftdruck: 47.88;  
+04.08.2016	13:27:01	INFO	Server wurde gestartet 
+04.08.2016	13:27:21	INFO	ID 1 Innentemperatur: 29.66; Aussentemperatur: 52.55; Heizung: 41.27; Luftdruck: 66.33;  
+04.08.2016	13:28:24	INFO	ID 1 Innentemperatur: 67.36; Aussentemperatur: 42.03; Heizung: 64.91; Luftdruck: 59.79;  
+04.08.2016	13:28:54	INFO	Server wurde gestartet 
+04.08.2016	13:29:19	INFO	ID 1 Innentemperatur: 23.23; Aussentemperatur: 68.08; Heizung: 28.19; Luftdruck: 45.74;  
+04.08.2016	13:30:23	INFO	Server wurde gestartet 
+04.08.2016	13:30:49	INFO	ID 1 Innentemperatur: 62.68; Aussentemperatur: 65.71; Heizung: 14.84; Luftdruck: 46.47;  
+04.08.2016	13:31:52	INFO	ID 1 Innentemperatur: 56.32; Aussentemperatur: 57.1; Heizung: 18.13; Luftdruck: 29.2;  
+04.08.2016	13:32:56	INFO	ID 1 Innentemperatur: 68.28; Aussentemperatur: 45.96; Heizung: 16.56; Luftdruck: 48.8;  
+04.08.2016	13:34:00	INFO	ID 1 Innentemperatur: 65.54; Aussentemperatur: 24.58; Heizung: 58.71; Luftdruck: 34.0;  
+04.08.2016	13:35:04	INFO	ID 1 Innentemperatur: 54.73; Aussentemperatur: 50.74; Heizung: 35.24; Luftdruck: 31.95;  
+04.08.2016	13:36:11	INFO	ID 1 Innentemperatur: 55.28; Aussentemperatur: 69.4; Heizung: 48.32; Luftdruck: 38.0;  
+04.08.2016	13:37:18	INFO	ID 1 Innentemperatur: 55.54; Aussentemperatur: 58.92; Heizung: 52.99; Luftdruck: 69.33;  
+04.08.2016	13:38:25	INFO	ID 1 Innentemperatur: 62.83; Aussentemperatur: 25.67; Heizung: 29.2; Luftdruck: 56.57;  
+04.08.2016	13:39:31	INFO	ID 1 Innentemperatur: 49.64; Aussentemperatur: 21.77; Heizung: 63.83; Luftdruck: 62.15;  
+04.08.2016	13:40:38	INFO	ID 1 Innentemperatur: 51.54; Aussentemperatur: 41.37; Heizung: 28.84; Luftdruck: 41.82;  
+04.08.2016	13:41:45	INFO	ID 1 Innentemperatur: 64.37; Aussentemperatur: 34.52; Heizung: 63.64; Luftdruck: 67.09;  
+04.08.2016	13:42:51	INFO	ID 1 Innentemperatur: 60.42; Aussentemperatur: 31.96; Heizung: 31.31; Luftdruck: 11.81;  
+04.08.2016	13:43:58	INFO	ID 1 Innentemperatur: 66.6; Aussentemperatur: 42.34; Heizung: 46.92; Luftdruck: 38.19;  
+04.08.2016	13:45:05	INFO	ID 1 Innentemperatur: 63.68; Aussentemperatur: 58.84; Heizung: 63.11; Luftdruck: 36.07;  
+04.08.2016	13:46:11	INFO	ID 1 Innentemperatur: 25.22; Aussentemperatur: 33.37; Heizung: 63.29; Luftdruck: 50.91;  
+04.08.2016	13:47:18	INFO	ID 1 Innentemperatur: 10.55; Aussentemperatur: 63.21; Heizung: 37.31; Luftdruck: 11.88;  
+04.08.2016	13:48:25	INFO	ID 1 Innentemperatur: 51.4; Aussentemperatur: 63.36; Heizung: 14.26; Luftdruck: 16.11;  
+04.08.2016	13:49:31	INFO	ID 1 Innentemperatur: 59.97; Aussentemperatur: 20.66; Heizung: 60.39; Luftdruck: 69.57;  
+04.08.2016	13:50:38	INFO	ID 1 Innentemperatur: 20.15; Aussentemperatur: 46.23; Heizung: 41.32; Luftdruck: 44.69;  
+04.08.2016	13:51:11	INFO	Server wurde gestartet 
+04.08.2016	13:51:21	INFO	Server wurde gestartet 
+04.08.2016	13:51:46	INFO	ID 1 Innentemperatur: 35.75; Aussentemperatur: 44.11; Heizung: 27.11; Luftdruck: 25.04;  
+04.08.2016	13:52:50	INFO	ID 1 Innentemperatur: 38.27; Aussentemperatur: 36.25; Heizung: 53.26; Luftdruck: 41.96;  
+04.08.2016	13:53:53	INFO	ID 1 Innentemperatur: 47.53; Aussentemperatur: 54.58; Heizung: 45.6; Luftdruck: 16.57;  
+04.08.2016	13:54:57	INFO	ID 1 Innentemperatur: 31.51; Aussentemperatur: 58.08; Heizung: 52.94; Luftdruck: 27.48;  
+04.08.2016	13:56:04	INFO	ID 1 Innentemperatur: 26.95; Aussentemperatur: 60.89; Heizung: 65.99; Luftdruck: 16.24;  
+04.08.2016	13:57:11	INFO	ID 1 Innentemperatur: 11.14; Aussentemperatur: 65.29; Heizung: 34.19; Luftdruck: 47.63;  
+04.08.2016	13:57:37	INFO	Server wurde gestartet 
+04.08.2016	13:57:43	INFO	Server wurde gestartet 
+04.08.2016	13:58:09	INFO	ID 1 Innentemperatur: 27.47; Aussentemperatur: 55.91; Heizung: 67.94; Luftdruck: 51.6;  
+04.08.2016	13:59:59	INFO	ID 1 Innentemperatur: 50.97; Aussentemperatur: 56.18; Heizung: 41.86; Luftdruck: 41.45;  
+04.08.2016	14:04:14	INFO	Server wurde gestartet 
+04.08.2016	14:04:50	INFO	ID 1 Innentemperatur: 13.02; Aussentemperatur: 43.42; Heizung: 45.77; Luftdruck: 59.08;  
+04.08.2016	14:10:15	INFO	ID 1 Innentemperatur: 13.87; Aussentemperatur: 26.37; Heizung: 47.81; Luftdruck: 57.2;  
+04.08.2016	14:11:38	INFO	ID 1 Innentemperatur: 65.86; Aussentemperatur: 53.88; Heizung: 25.4; Luftdruck: 58.39;  
+04.08.2016	14:13:24	INFO	ID 1 Innentemperatur: 19.79; Aussentemperatur: 69.84; Heizung: 23.18; Luftdruck: 22.82;  
+04.08.2016	14:14:00	INFO	Server wurde gestartet 
+04.08.2016	14:14:25	INFO	ID 1 Innentemperatur: 58.88; Aussentemperatur: 27.73; Heizung: 34.47; Luftdruck: 47.83;  
+04.08.2016	14:17:14	INFO	Server wurde gestartet 
+04.08.2016	14:17:49	INFO	ID 1 Innentemperatur: 22.36; Aussentemperatur: 55.17; Heizung: 47.58; Luftdruck: 65.65;  
+04.09.2016	15:15:40	INFO	Server wurde gestartet 
+04.09.2016	15:16:06	INFO	ID 1 Innentemperatur: 68.65; Aussentemperatur: 48.56; Heizung: 13.34; Luftdruck: 20.67;  
+04.09.2016	15:16:35	INFO	ID 1 Innentemperatur: 46.3; Aussentemperatur: 60.77; Heizung: 62.99; Luftdruck: 28.23;  
+04.09.2016	15:16:36	INFO	Server wurde beendet 
