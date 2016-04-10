@@ -36,7 +36,7 @@ import org.json.simple.parser.ParseException;
     @ServerEndpoint("/chat")
 public class IoTEndpoint {
     
-     static Long id;
+     static int id;
     /**
      * static session Variable für die anderen Klassen
      */
@@ -67,7 +67,7 @@ public class IoTEndpoint {
      * @throws IOException
      */
     @OnMessage
-    public String onMessage(Session session,String message) throws ParseException, IOException {
+    public String onMessage(Session session,String message) throws ParseException, IOException, SQLException {
         
         String ID = (String) session.getUserProperties().get("ID");
         /**
@@ -76,17 +76,18 @@ public class IoTEndpoint {
          * Wenn kein Attribut (uID) gesetzt ist, ID in Session als String eintragen
          */
         if(ID == null){
-            
             /**
-             * decodingJson zerlegt den JSON String und trägt den Controller in die Datenbank ein
+             * checkTyp zerlegt exrahiert den Telegrammtyp
+             * typ 0: erste Verbindung
+             * typ 1: werte vom Controller empfangen
              * @param message kommt vom Controller
              * @param session aktuelle Session
              */
-            decodingJson(session,message);
+            checkTyp(session,message);
             /**
              * @param ID ist der identifizierende Name des Controllers
              */
-            session.getUserProperties().put("ID", Long.toString(id));
+            session.getUserProperties().put("ID", Integer.toString(id));
             /**
              * @deprecated nachstehenden zwei Methoden sind für den Chatserver
              * werden hier nicht gebraucht
@@ -126,12 +127,14 @@ public class IoTEndpoint {
      */
     @OnClose
     public void onClose(Session session) {
-       try {
+       if(session != null){
+        try {
              database.updateDatabase(" ","nein",Integer.parseInt((String)session.getUserProperties().get("ID")));
          } 
        catch (SQLException ex) {
              Logger.getLogger(IoTEndpoint.class.getName()).log(Level.SEVERE, null, ex);
          }
+       }
         sessions.remove(session);
  
         System.out.println("Server: Connection closed...");
@@ -154,52 +157,40 @@ public class IoTEndpoint {
         
     /**
      * Decodiert den empfangenen JSON String und schreibt in ein Logfile 
+     * @param session
      * @param json empfangene Daten
      * @throws ParseException Fehler beim JSON decoding
      * @throws IOException  falsche Eingabe
+     * @throws java.sql.SQLException fehler beim Datenbankeintrag der Sensorenwerte
      */
-    public void decodingJson(Session session,String json) throws ParseException, IOException{
-        JSONParser parser = new JSONParser();
-        Object obj = parser.parse(json);
-	JSONObject jsonObject = (JSONObject) obj;
-        double value =0.00;
-        /**
-         * Controller wird in die Datenbank eingetragen
-         */
-        if((obj.toString().contains("id")) && (obj.toString().contains("name"))){
-            id = (Long) (jsonObject.get("id"));
-            String name = (String) (jsonObject.get("name"));
-            String ip = (String) (jsonObject.get("ip"));
-            String location = (String)(jsonObject.get("location"));
-            database.insertController(id.intValue(),name,ip,location);
-        }
-        /**
-         * Fullupdate wird gesendet
-         */
-        if(obj.toString().contains("temp_in") && obj.toString().contains("temp_out")){
-            String allValues ="";
-            value = (double)(jsonObject.get("temp_in"));
-            allValues = allValues + buildDecodeJSON("Innentemperatur: ","temp_in", jsonObject);
-            allValues = allValues + buildDecodeJSON("Aussentemperatur: ","temp_out", jsonObject);
-            allValues = allValues + buildDecodeJSON("Heizung: ","heizung", jsonObject);
-            allValues = allValues + buildDecodeJSON("Luftdruck: ","luftdruck", jsonObject);
-           logger.info("ID " + (String)session.getUserProperties().get("ID")+" "+ allValues);
-        }
-        else if(obj.toString().contains("temp_in")){
-            value = (double)(jsonObject.get("temp_in"));
-            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Innentemperatur: "+ Double.toString(value));
-        }
-        else if(obj.toString().contains("temp_out")){
-            value = (double) jsonObject.get("temp_out");
-            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Aussentemperatur: "+ Double.toString(value));
-        }
-        else if(obj.toString().contains("heizung")){
-            value = (double) jsonObject.get("heizung");
-            logger.info("ID " + (String)session.getUserProperties().get("ID")+" Heizung: "+ Double.toString(value));
-        }
+    public void decodingJson(Session session,String json) throws ParseException, IOException, SQLException{
+
+        int group_id = getID(json,"group");
+        
+        switch(group_id){
+            
+            case 1:
+               sendValuesDatabase(json,IoTServer.sensorname[group_id],group_id);
+            break;
+            case 2:
+               sendValuesDatabase(json,IoTServer.sensorname[group_id],group_id);
+            break;
+            case 3:
+                sendValuesDatabase(json,IoTServer.sensorname[group_id],group_id);
+            break;
+            case 4:
+                sendValuesDatabase(json,IoTServer.sensorname[group_id],group_id);
+            break;
+            case 5:
+                sendValuesDatabase(json,IoTServer.sensorname[group_id -4],(group_id-4));
+                sendValuesDatabase(json,IoTServer.sensorname[group_id -3],(group_id-3));
+                sendValuesDatabase(json,IoTServer.sensorname[group_id -2],(group_id-2));
+                sendValuesDatabase(json,IoTServer.sensorname[group_id -1],(group_id-1));
+         }
     } 
     /**
      * Erstellt einen decotierten String
+     * @deprecated Wird aktuell nicht verwendet
      * @param s Name des Wertes im JSON
      * @param name Name des Wertes klartext
      * @param j JSON object
@@ -235,5 +226,110 @@ public class IoTEndpoint {
     session.getBasicRemote().sendText(Integer.toString(randomNum));
     }
     
+    /**
+     * Die Methode entscheidet über den Telegrammtyp TYP: welche operationen ausgeführt werden
+     * typ 0: erste Verbindung; typ 1: eintrag in Datenbank; typ 2: holen aus Datenbank
+     * @param session aktuelle Session des Clients
+     * @param json Nachricht die vom Controller oder vom einem Client kommt
+     * @throws ParseException Fehler im JSON
+     * @throws IOException  Falscher Variablentyp
+     * @throws SQLException delegierter Fehler Datenbankeintrag
+     */
+    public void checkTyp(Session session, String json) throws ParseException, IOException, SQLException{
+        
+        int typ = getID(json,"typ");
+        
+        switch(typ){
+            
+            case 0:
+                decodeTyp0(json);
+                break;
+            case 1:
+                decodingJson(session,json);
+                break;
+            case 2:
+                break;
+                
+        }
+    }
+    /**
+     * Fügt in die Datenbank Controllername, IP, Ort, Status und verfügbare Sensoren ein
+     * @param json JSON vom Controller
+     * @throws ParseException 
+     * @throws java.sql.SQLException 
+     */
+    public void decodeTyp0(String json) throws ParseException, SQLException{
+            //Controller regisitrieren
+            id = getID(json,"id");
+            String name = getName(json,"name");
+            String ip = getName(json,"ip");
+            String location =getName(json,"location");
+            database.insertController(id,name,ip,location);
+        //Sensorgruppen eintragen  
+        for(int i= 1;i<5;i++){
+            database.insertGroups(getName(json,"sensor_"+i),id,i);
+          }
+    }
+    
+    /**
+     * Bereitet die JSON Zeichenkette für den Datenbankeintrag vor
+     * @param json Zeichenkette vom Controller
+     * @param name Name des Sensors
+     * @param group_id ID des Sensors
+     * @throws SQLException delegierter Fehler beim Datenbankeintrag
+     * @throws ParseException JSON Fehler
+     */
+    private void sendValuesDatabase(String json, String name, int group_id) throws SQLException, ParseException{
+//        JSONParser parser = new JSONParser();
+//        Object obj = parser.parse(json);
+//	JSONObject jsonObject = (JSONObject) obj;
+        double value = 0.00;
+        value = getDouble(json,name);
+        logger.info("ID " + getID(json,"id")+ getDouble(json,name) + Double.toString(value) );
+        database.insertValues(value,group_id);
+    }
+    /**
+     * Holt aus dem JSON den angeforderten Wert
+     * @param json Nachricht vom Controller oder Client
+     * @param name Name des Parameters im JSON
+     * @return integer
+     * @throws ParseException Fehler im JSON
+     */
+    private int getID(String json, String name) throws ParseException{
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(json);
+            JSONObject jsonObject = (JSONObject) obj;
+            Long group_id = (Long)(jsonObject.get(name));
+        return group_id.intValue();
+    }
+    /**
+     * Holt aus dem JSON den Angeforderten Wert
+     * @param json Nachricht vom Controller oder Client
+     * @param name Name des Parameters im JSON
+     * @return String
+     * @throws ParseException fehler im JSON
+     */
+    private String getName(String json, String name) throws ParseException{
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(json);
+            JSONObject jsonObject = (JSONObject) obj;
+            String name_1 = (String)(jsonObject.get(name));
+        return name_1;
+    }
+    
+        /**
+     * Holt aus dem JSON den Angeforderten Wert
+     * @param json Nachricht vom Controller oder Client
+     * @param name Name des Parameters im JSON
+     * @return double
+     * @throws ParseException fehler im JSON
+     */
+    private double getDouble(String json, String name) throws ParseException{
+            JSONParser parser = new JSONParser();
+            Object obj = parser.parse(json);
+            JSONObject jsonObject = (JSONObject) obj;
+            double value = (double)(jsonObject.get(name));
+        return value;
+    }
 }
 

@@ -6,10 +6,13 @@
  */
 package info.vigaun.IoT;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import javax.websocket.DeploymentException;
 import javax.websocket.Session;
 import org.glassfish.tyrus.server.Server;
 import org.json.simple.JSONObject;
@@ -30,11 +33,13 @@ public class IoTServer {
     static Logger logger = Logger.getRootLogger();
     static String filename = "sensor.log";
     static String pattern = "%d{MM.dd.yyyy\tHH:mm:ss}\t%p\t%m %n";
+    static String[] sensorname = new String[9];
     /**
      * @param args the command line arguments
      */
     public static void main(String[] args) {
         
+
         /**
          * Fileappender erstellen und dem Logger hinzufügen
          */
@@ -48,7 +53,9 @@ public class IoTServer {
         }
         logger.addAppender(fileAppender);
         logger.info("Server wurde gestartet");
+        readSensorName();
         runServer();
+
 
     }
  
@@ -61,8 +68,8 @@ public class IoTServer {
             server.start();
             runMenue();
             } 
-        catch (Exception e) {
-            throw new RuntimeException(e);
+        catch (DeploymentException | IOException | InterruptedException | SQLException e) {
+            logger.info("Fehler: "+e.toString());
             } 
         finally {
             server.stop();
@@ -74,7 +81,7 @@ public class IoTServer {
  * @throws IOException falsche Eingabe
  * @throws InterruptedException falsche
  */    
-private static void runMenue() throws IOException, InterruptedException{
+private static void runMenue() throws IOException, InterruptedException, SQLException{
 
 while(true){
 Scanner s = new Scanner(System.in);
@@ -88,6 +95,8 @@ System.out.println("|        1. Update: Alle Werte          |");
 System.out.println("|        2. Update: Temperatur          |");
 System.out.println("|        3. Update: Luftfeuchtigkeit    |");
 System.out.println("|        4. Exit                        |");
+System.out.println("|        5. Insert                      |");
+System.out.println("|        6. Abfrage                     |");
 System.out.println("=========================================");
 System.out.println("\n Wählen Sie eine Option aus:");
 
@@ -120,7 +129,7 @@ case 2:
         break;
   }
     else{
-      IoTEndpoint.session1.getAsyncRemote().sendText(createJSON("3"));
+      IoTEndpoint.session1.getAsyncRemote().sendText(createJSON("2"));
       Thread.sleep(2000);
       break;
   }
@@ -131,7 +140,7 @@ case 3:
         break;
   }
     else{
-      IoTEndpoint.session1.getAsyncRemote().sendText(createJSON("1"));
+      IoTEndpoint.session1.getAsyncRemote().sendText(createJSON("3"));
       Thread.sleep(2000);
       break; 
     }
@@ -140,8 +149,15 @@ case 4:
    logger.info("Server wurde beendet");
    setOnlineStatus();
    System.exit(1);
-
+case 5:
+   System.out.println("Insert");
+   logger.info("Datenbankeintrag");
+   database.insertValues(23.56, 2);
    break;
+   case 6:
+      database.getFromDataBase(2);
+      Thread.sleep(2000);
+      break; 
 default:
   System.out.println("Falsche Auswahl!");
   Thread.sleep(2000);
@@ -149,7 +165,10 @@ default:
   }
  }     
 }
-
+/**
+ * Beim Beenden des Programmes wird der Onlinestatus auf "nein" geändert
+ * Zusätzlich wird die IP gelöscht
+ */
 private static void setOnlineStatus(){
     
     for (Session s: IoTEndpoint.sessions){
@@ -169,9 +188,26 @@ private static void setOnlineStatus(){
  * @return JSON String
  */
  private static String createJSON(String value){
-        JSONObject obj = new JSONObject();
+        
+     JSONObject obj = new JSONObject();
         obj.put("request", value);
         System.out.print(obj.toString()+"\n");
-        return obj.toString();   
+     return obj.toString();   
     }  
+ 
+ private static void readSensorName(){
+     
+    int i = 1;
+      try {
+        BufferedReader br = new BufferedReader (new FileReader("sensorname.txt") );
+        while( (sensorname[i] = br.readLine()) != null ) { // liest zeilenweise aus Datei  
+          i++;
+        }
+        br.close();
+      }
+      catch (IOException e) {
+        logger.info("Fehler: "+e.toString());
+      }
+ }
 }
+

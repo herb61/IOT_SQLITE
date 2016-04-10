@@ -1,0 +1,4 @@
+innentemperatur
+aussentemperatur
+heizung
+luftdruck

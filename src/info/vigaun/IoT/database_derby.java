@@ -21,7 +21,7 @@ import java.util.logging.Logger;
  *
  * @author Herbert
  */
-public class database {
+public class database_derby {
     
     public static void insertController(int id,String name,String ip, String location) {
         try {
